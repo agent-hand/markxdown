@@ -35,6 +35,7 @@
     "build": "nuxt-module-build build",
     "dev": "yarn dev:prepare && nuxt dev playground --port 3200",
     "dev:build": "nuxt build playground",
+    "dev:preview": "nuxt preview playground",
     "dev:prepare": "nuxt-module-build build && nuxt-module-build prepare && nuxt prepare playground",
     "test": "vitest run",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
