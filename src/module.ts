@@ -169,7 +169,8 @@ export interface ModuleOptions {
  * 外は `#markdown` から引く。内側のファイルを直接指す import は書かない
  * （`openspec/specs/app-structure` の「モジュールの参照は明示 import で行う」）。
  *
- * `modules/` は Nuxt が自動で読む置き場で、`nuxt.config.ts` に列挙しない。
+ * 利用側は `nuxt.config.ts` の `modules` にこの package を明示して並べる。アプリの `modules/`
+ * ディレクトリの自動読み込みでは入らない（外部 package はそこに現れない）。
  *
  * **`runtime/` の中は口で切る。** `components/` `composables/` のような種類での区切りにしない。
  * 種類で切ると、開くまで描くのか直すのか位置を出すのか分からず、口を細くするという
@@ -194,9 +195,16 @@ export interface ModuleOptions {
  * 登録するかどうかを決める（`@nuxt/ui/dist/module.mjs:121`）ので、こちらが先に
  * `@nuxtjs/mdc` を入れていないと Prose が1つも登録されない。
  *
- * 利用側は `modules` の並びでこれを満たす（`nuxt.config.ts` の `'./modules/markdown'` が
- * `'@nuxt/ui'` の前）。`modules/` ディレクトリの自動読み込みに任せると後回しになるので、
- * 明示して並べること。
+ * 利用側は `modules` の並びでこれを満たす（`nuxt.config.ts` の `'@agent-hand/markxdown'` を
+ * `'@nuxt/ui'` より前に置く）。並びが逆でもアプリは落ちず、本文が素のタグのままになって
+ * 見た目だけが失われる。
+ *
+ * **本文の見た目の CSS はここでは足さない。** 利用側が `main.css` に
+ * `@import "@agent-hand/markxdown";` の1行を書いて取り込む（`package.json` の
+ * `exports["."].style` → `runtime/index.css`）。`@nuxt/ui` と同じ配り方で、Tailwind の走査
+ * （`@source`）と plugin（`@tailwindcss/typography`）もその CSS が持つ。`nuxt.options.css` に
+ * push すると同じファイルが2経路で入り、`@import` 側の `@source` / `@plugin` の有無と
+ * 無関係に見た目だけが効いてしまう。
  */
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -309,11 +317,5 @@ export default defineNuxtModule<ModuleOptions>({
       filePath: resolve('./runtime/render/MarkdownFence.vue'),
       global: true,
     });
-
-    // 本文の見た目。**push で後ろに足すこと。**
-    // `@layer sb-doc;` の宣言が `@import "tailwindcss"`（main.css）より後に来ないと、
-    // レイヤーの並びが theme → base → components → utilities → sb-doc にならず、
-    // prose（utilities）に負ける
-    nuxt.options.css.push(resolve('./runtime/assets/markdown.css'));
   },
 });
