@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "markxdown-playground",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build"
+  },
+  "dependencies": {
+    "@agent-hand/markxdown": "link:..",
+    "@nuxt/ui": "^4.10.0",
+    "nuxt": "^4.5.2"
+  }
+}

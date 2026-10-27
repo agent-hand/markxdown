@@ -1,0 +1,13 @@
+/*
+ * 利用側が `@import "@agent-hand/markxdown";` の1行で取り込む入口。
+ * `package.json` の `exports["."].style` がここ（build 後は `dist/runtime/index.css`）を指す。
+ *
+ * `@nuxt/ui` と同じ形（`@nuxt/ui/dist/runtime/index.css` の `@source "./components"`）。
+ * この package の中だけが名乗る Tailwind クラスを、利用側に `@source` を書かせずに生成させる。
+ * `../` は build 後の `dist/` 全体で、`runtime/**` の部品と `module.mjs` の theme 文字列を含む。
+ */
+@import "./assets/markdown.css";
+
+@plugin "@tailwindcss/typography";
+
+@source "../";

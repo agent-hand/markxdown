@@ -1,0 +1,72 @@
+{
+  "name": "@agent-hand/markxdown",
+  "version": "0.1.0",
+  "description": "markdown を描く・直す・位置を出す Nuxt module。@nuxt/ui の Prose の上で働く",
+  "repository": "agent-hand/markxdown",
+  "type": "module",
+  "packageManager": "yarn@4.17.0",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "style": "./dist/runtime/index.css",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "style": "./dist/runtime/index.css",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "playground"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "build": "nuxt-module-build build",
+    "dev": "yarn dev:prepare && nuxt dev playground --port 3200",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build && nuxt-module-build prepare && nuxt prepare playground",
+    "test": "vitest run",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.5.2",
+    "@nuxtjs/mdc": "^0.23.1",
+    "@tailwindcss/typography": "^0.5.16",
+    "@vueuse/core": "^14.4.0",
+    "defu": "^6.1.7",
+    "mermaid": "^10.9.1",
+    "remark-mdc": "^3.11.1"
+  },
+  "peerDependencies": {
+    "@nuxt/ui": "^4.10.0",
+    "tailwindcss": "^4.3.2",
+    "vue": "^3.5.41",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.3",
+    "@nuxt/test-utils": "^4.1.0",
+    "@nuxt/ui": "^4.10.0",
+    "@types/node": "^22",
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^20.11.6",
+    "nuxt": "^4.5.2",
+    "tailwindcss": "^4.3.2",
+    "typescript": "~5.9",
+    "vitest": "^4.1.11",
+    "vue": "^3.5.41",
+    "vue-router": "^5.2.0",
+    "vue-tsc": "^3.3.10"
+  }
+}
