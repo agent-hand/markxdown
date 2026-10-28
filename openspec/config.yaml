@@ -1,0 +1,14 @@
+schema: specs-with-grill
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+context: |
+  markxdown は markdown を描く・直す・位置を出す Nuxt module（package 名 `@agent-hand/markxdown`、
+  module 名・`configKey` は `markxdown`）。`@nuxt/ui` の Prose の上で働く。
+
+  この openspec は markxdown 自身の振る舞いの規定を持つ。`specs/markdown/module` は
+  stroke-board（`/opt/projects/stroke-board`）の `openspec/specs/markdown/module` から
+  change `remove-module-markdown` で移したもの。module の振る舞いを変える change はここで起票する。
+
+  実装は `src/module.ts` と `src/runtime/**`、確認は `playground/`、テストは `test/`
+  （写し元の構造を写す: `src/runtime/position/plain.ts` ↔ `test/src/runtime/position/plain.test.ts`）。
