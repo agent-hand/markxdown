@@ -2,15 +2,11 @@
   "permissions": {
     "allow": [
       "AskUserQuestion",
-      "Read(//opt/projects/**/.spec-workflow/templates/**)",
-      "Read(//opt/projects/**/.spec-workflow/user-templates/**)",
       "Bash(openspec *)",
+      "Edit(/openspec/**)",
       "Edit(/docs/adr/**)",
       "Read(/.claude/**)",
       "Edit(//opt/projects/stroke-board/openspec/**)",
-      "Bash(npx -y mdts --port 8522 *)",
-      "Bash(curl -s -X POST http://127.0.0.1*/api/strokes -H \"Content-Type: application/json\" -d '{*}')",
-      "mcp__specworkflow",
       "Bash(claude *)",
       "Bash(* claude *)",
       "Agent",
@@ -19,18 +15,11 @@
     "deny": [
       "Bash(sed *)",
       "Bash(git -C *)",
-      "Bash(git push *develop)",
-      "Bash(git push * develop*)",
       "Bash(git merge *)",
-      "Bash(git sparse-checkout*)",
-      "Bash(git * sparse-checkout*)",
-      "Bash(git config *sparseCheckout*)",
       "Bash(git reset*)",
       "Bash(git * reset*)",
-      "Bash(git * openspec*)",
       "Bash(awk *)",
       "Bash(cd /opt/projects/*)",
-      "Edit(/openspec/**)",
       "Read(/prompt/**)",
       "Edit(./.claude/**)",
       "Edit(//opt/projects/stroke-board/app/**)",
@@ -38,7 +27,6 @@
       "Edit(//opt/projects/stroke-board/shared/**)",
       "Edit(//opt/projects/stroke-board/docs/**)",
       "Edit(//opt/projects/stroke-board/openspec/**/.openspec.yaml)",
-      "Edit(//opt/projects/**/.spec-workflow/**)",
       "Edit(.mcp.json)"
     ]
   },
@@ -49,7 +37,7 @@
   },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": false,
     "ralph-speckit@smart-ralph": true,
     "ralph-specum@smart-ralph": true,
     "deep-project@piercelamb-plugins": true
