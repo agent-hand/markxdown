@@ -19,7 +19,7 @@
  * 本家は文書を markdown として描いている（`MDXEditorWrapper` 経由）。生テキストのまま
  * 出すと、見出しも表もコードブロックも潰れて本家と別物になるので、ここで markdown を
  * 解釈する。生 HTML・`on*` 属性・危険スキームは parse 時に落ちるので、ここで安全策を
- * 持たない（設定は `modules/markdown/index.ts`）。
+ * 持たない（設定は `src/module.ts`）。
  *
  * **本文の型は Tailwind Typography（`prose`）が持つ。**
  *
@@ -56,7 +56,7 @@ const props = withDefaults(
     /** E2E の掴み所。同じ画面に2つ置く場合に呼ぶ側が分ける */
     testid?: string;
     /**
-     * 本家写しの面（`.sb-markdown`）に載せる。
+     * 本家写しの面（`.markxdown-markdown`）に載せる。
      *
      * **型（prose）と面（置かれ方）は別物である。** 型はどこで出しても同じでなければ
      * ならないのでここが持つが、面は画面の作りに従う。本家写しの画面（仕様書・
@@ -79,10 +79,10 @@ const props = withDefaults(
 );
 
 /**
- * 図の差し替え先（`MarkdownFence` → `MarkdownDiagram`）へ降ろす。
+ * 図の差し替え先（`MarkxdownFence` → `MarkdownDiagram`）へ降ろす。
  *
  * **props では届かない。** MDC は `components.map` の値を `resolveComponent` で引いて
- * `MarkdownFence` を自分で作るので、本文の器から props を渡す経路が無い。
+ * `MarkxdownFence` を自分で作るので、本文の器から props を渡す経路が無い。
  *
  * **降ろす前に解析側の座標へ写す。**
  *
@@ -144,7 +144,7 @@ defineExpose({ toSourceRange, toDomRange } satisfies PositionPort);
 <template>
   <!--
     `prose …` は本家 `MDXEditorWrapper.tsx` の `contentEditableClassName` の写し（並びも同じ）。
-    `sb-markdown` は本家の MDXEditor 由来の差分（表・インラインコード・面）を載せる掛かり、
+    `markxdown-markdown` は本家の MDXEditor 由来の差分（表・インラインコード・面）を載せる掛かり、
     `document-content` は E2E の掴み所。
   -->
   <div
@@ -152,7 +152,7 @@ defineExpose({ toSourceRange, toDomRange } satisfies PositionPort);
     ref="root"
     v-bind="$attrs"
     class="prose prose-sm sm:prose-base max-w-none dark:prose-invert prose-img:max-w-full prose-img:h-auto prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-white prose-code:text-gray-800 dark:prose-code:text-gray-200 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-pre:bg-gray-50 dark:prose-pre:bg-gray-900 prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300 prose-li:text-gray-700 dark:prose-li:text-gray-300"
-    :class="props.surface ? 'sb-markdown' : ''"
+    :class="props.surface ? 'markxdown-markdown' : ''"
     :data-testid="props.testid"
   >
     <!--
@@ -179,9 +179,9 @@ defineExpose({ toSourceRange, toDomRange } satisfies PositionPort);
       なった（Vue が全体を描き直し、アイコンが消えた。実測）。解析の段は触らないこと。
 
       **この形は検知されている。** 主は
-      `test/modules/markdown/runtime/render/markdown-view-position.test.ts` の
+      `test/src/runtime/render/markdown-view-position.test.ts` の
       「解析の段は `<MDC>` に残っている」で、`<MDC>` のスタブが**実際に描かれたか**を見る。
-      従は `test/modules/markdown/runtime/position/silent-failure.test.ts` の「件1」
+      従は `test/src/runtime/position/silent-failure.test.ts` の「件1」
       （このファイルの中身を読む文字列検査）。症状の側は `e2e/markdown-hydration.spec.ts`。
       実測: ここを `watchEffect` + `parseMarkdown` の自前呼び出しへ書き換えると、
       その2ファイルで12本が落ちた（うち markdown-view-position が7本。2026-08-30）。

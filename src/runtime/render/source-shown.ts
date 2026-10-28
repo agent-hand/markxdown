@@ -10,8 +10,8 @@
  * どれを渡しても同じように働く。
  *
  * **渡し方は provide/inject である。** props では届かない。MDC はコードブロックを
- * `resolveComponent('MarkdownFence')` で自分で作るので（`@nuxtjs/mdc` の `MDCRenderer.vue`）、
- * `MarkdownView` から `MarkdownFence` へ渡す経路が親子の props に無い。
+ * `resolveComponent('MarkxdownFence')` で自分で作るので（`@nuxtjs/mdc` の `MDCRenderer.vue`）、
+ * `MarkdownView` から `MarkxdownFence` へ渡す経路が親子の props に無い。
  *
  * **provide が無ければ「範囲なし」である。** 既定は図だけを出す。渡す側を持たない画面
  * （ストローク側の本文など）で見え方が変わらないようにするため、既定値を空の配列にして

@@ -1,35 +1,63 @@
 /*
- * markdown 本文の見た目。**このファイルは markdown モジュールが自分で足す**
- * （`modules/markdown/index.ts` の `nuxt.options.css.push`）。`app/assets/css/main.css`
- * に戻さないこと（`openspec/specs/markdown/module`）。
+ * markdown 本文の見た目。**この package が自分で配る。** 利用側は `main.css` で
+ * `@import "@agent-hand/markxdown";`（`../index.css`）を `@import "tailwindcss"` より後に
+ * 書いて取り込む。利用側の CSS に本文の指定を戻さないこと（`openspec/specs/markdown/module`）。
  *
- * 読み込みは main.css より後になる。`@layer sb-doc;` の宣言が
- * `@import "tailwindcss"`（main.css）より後に来る必要があるため、この順序が要る。
+ * `@layer markxdown;` の宣言が `@import "tailwindcss"` より後に来る必要があるため、
+ * `@import` の順序が要る。Tailwind にこの package のクラスを生成させる指定（`@source`）と
+ * `prose` の plugin（`@tailwindcss/typography`）は `../index.css` が持つ。
  */
 
 /*
- * このモジュールのクラスを Tailwind に生成させる指定（`@source`）は、ここではなく
- * `app/assets/css/main.css` にある。`@import "tailwindcss"` を持つファイルが
- * Tailwind の入口で、走査の指定はそこに集まる（ここに書いても効かない。実測）。
+ * この package が参照する色・寸法。**値は stroke-board の `app/assets/css/main.css` の
+ * design token（本家 spec-workflow-mcp の `.dark` の値）をそのまま写したもの。**
+ *
+ * 利用側が同じ名前の変数を持つことを当てにしない。package の部品は `--markxdown-*` だけを
+ * 引き、利用側に無くても見た目が崩れないようにする。`--markxdown-text-xs` / `-sm` /
+ * `-radius-lg` は Tailwind の `--text-xs` / `--text-sm` / `--radius-lg` と名前が似ているが、
+ * 値は本家の写し（11px / 12px / 8px）で、Tailwind の既定（12px / 14px / 8px）ではない。
  */
+:root {
+  --markxdown-surface-panel: #1e293b;
+  --markxdown-surface-sunken: #0f172a;
+
+  --markxdown-text-primary: #f1f5f9;
+  --markxdown-text-secondary: #cbd5e1;
+  --markxdown-text-faint: #64748b;
+
+  --markxdown-border-default: #334155;
+  --markxdown-border-strong: #475569;
+
+  --markxdown-interactive-primary: #6366f1;
+  --markxdown-interactive-primary-hover: #818cf8;
+  --markxdown-interactive-secondary: #334155;
+  --markxdown-interactive-secondary-hover: #475569;
+
+  --markxdown-status-success: #22c55e;
+  --markxdown-status-error: #ef4444;
+
+  --markxdown-text-xs: 11px;
+  --markxdown-text-sm: 12px;
+  --markxdown-radius-lg: 8px;
+}
 
 /*
- * ここから文書本文。**`components` ではなく `sb-doc` レイヤーに置く。**
+ * ここから文書本文。**`components` ではなく `markxdown` レイヤーに置く。**
  *
  * `@tailwindcss/typography` が出す `prose` 一式は Tailwind v4 では `utilities` レイヤーに
  * 入る（CSSOM で確認済み）。レイヤーは詳細度より強いので、`components` に置いた
- * `.sb-markdown th`（0,1,1）でも `utilities` の `.prose :where(thead th)`（0,1,0）に負ける。
+ * `.markxdown-markdown th`（0,1,1）でも `utilities` の `.prose :where(thead th)`（0,1,0）に負ける。
  * 実際に負けた: table の margin が 16px ではなく prose の 2em(28px)、th の padding が
  * 4px 8px ではなく prose の padding-inline/padding-bottom になっていた。
  *
- * `@layer sb-doc;` を `@import "tailwindcss"` より後に宣言することで、レイヤーの並びが
- * theme → base → components → utilities → sb-doc になり、ここの規則が prose に勝つ。
+ * `@layer markxdown;` を `@import "tailwindcss"` より後に宣言することで、レイヤーの並びが
+ * theme → base → components → utilities → markxdown になり、ここの規則が prose に勝つ。
  * prose に任せる型（見出し・段落・箇条書き・引用の骨格・罫線）はここに**書かない**。
  * 書いたものだけが上書きになる。
  */
-@layer sb-doc;
+@layer markxdown;
 
-@layer sb-doc {
+@layer markxdown {
   /*
    * 文書の本文。
    *
@@ -56,7 +84,7 @@
    * の `min-height:200px` / `background-color:#111827` ＋ `_contentEditable_` の padding）。
    * パネル（#1e293b）の中に一段暗い矩形が入るのが本家の見え方（実測・目視とも）。
    */
-  .sb-markdown {
+  .markxdown-markdown {
     min-height: 200px;
     padding: 12px;
     background: #111827;
@@ -74,13 +102,13 @@
 
   /*
    * コードブロック。枠・行番号・折り返しは `ProsePre` が持つ（`ui.prose.pre`。
-   * `modules/markdown/index.ts` の `PROSE_THEME`）。ここに残すのは `ProsePre` の外に置く
-   * 右上の札と、その位置の基準だけ（`MarkdownFence.vue`）。
+   * `src/module.ts` の `PROSE_THEME`）。ここに残すのは `ProsePre` の外に置く
+   * 右上の札と、その位置の基準だけ（`MarkxdownFence.vue`）。
    *
-   * `.sb-code` は `ProsePre` の入れ物（外枠）を包むだけの箱で、自分では寸法を持たない。
+   * `.markxdown-code` は `ProsePre` の入れ物（外枠）を包むだけの箱で、自分では寸法を持たない。
    * 外枠の margin は箱を素通りするので、箱の縁は外枠の縁と重なる。
    */
-  .sb-code {
+  .markxdown-code {
     position: relative;
   }
 
@@ -95,7 +123,7 @@
    * 角が枠の内側の丸み（7px）に切られる。帯は外枠の外の箱に居るので、同じ位置と同じ丸みを
    * 自分で持つ。
    */
-  .sb-code-toolbar {
+  .markxdown-code-toolbar {
     position: absolute;
     top: 1px;
     right: 1px;
@@ -112,7 +140,7 @@
 
   /*
    * インラインコード・表・リンク・引用の指定はここに無い。**`ui.prose.*` へ移した**
-   * （`modules/markdown/index.ts` の `PROSE_THEME`）。値の出どころと実測はそちらの
+   * （`src/module.ts` の `PROSE_THEME`）。値の出どころと実測はそちらの
    * コメントが持つ。
    */
 }
@@ -128,9 +156,9 @@
    *
    * 背景の #1f2937 は本家 CSS の `.mdx-editor-wrapper.dark-theme .mermaid-container`、
    * 枠の色は Tailwind v4 の gray-700（本家の `dark:border-gray-700`）。
-   * `.sb-markdown pre` に当たらないよう、図は `pre` ではなく `div` で出している。
+   * `.markxdown-markdown pre` に当たらないよう、図は `pre` ではなく `div` で出している。
    */
-  .sb-mermaid {
+  .markxdown-mermaid {
     display: flex;
     justify-content: center;
     overflow: auto;
@@ -146,24 +174,105 @@
    * インラインの max-width が勝つので原寸が上限になり、入れ物が狭いときだけ縮む。
    * ここは本家と同じく、その指定が無い場合の受けとして置いている。
    */
-  .sb-mermaid svg {
+  .markxdown-mermaid svg {
     max-width: 100%;
     height: auto;
   }
 
   /*
-   * 文書を直すときの入力欄の指定（`.sb-textarea`）はここに無い。`UTextarea` の `ui`
-   * （`MarkdownEditor.vue` の `TEXTAREA_UI`）へ移した。
+   * 文書を直すときの入力欄の指定はここに無い。`UTextarea` の `ui`
+   * （`MarkdownEditor.vue` の `TEXTAREA_UI`）が持つ。
    */
 
   /* 保存できなかった理由。消えると何が起きたか分からなくなるので、色だけで示さない */
-  .sb-error {
+  .markxdown-error {
     margin-bottom: 12px;
     padding: 8px 12px;
     border-radius: 6px;
-    background: var(--surface-sunken);
-    border: 1px solid var(--status-error);
-    color: var(--status-error);
-    font-size: var(--text-sm);
+    background: var(--markxdown-surface-sunken);
+    border: 1px solid var(--markxdown-status-error);
+    color: var(--markxdown-status-error);
+    font-size: var(--markxdown-text-sm);
+  }
+
+  /*
+   * 状態のチップ（保存しました / 未保存 / 保存できません）。`MarkdownEditor.vue` が使う。
+   *
+   * 定義はもと stroke-board の `app/assets/css/main.css` の `.sb-chip` / `.sb-chip-on`
+   * （prototype 由来）に在り、値はそのまま写している。package の利用者は `main.css` を
+   * 持たないので、package が自分で配る。
+   *
+   * 基調色。アクティブはこれを差し替えるだけで、形はそのまま受け継ぐ。
+   * 3状態で同じ形にする。際立つかどうかだけが違い、幅は揃える。
+   */
+  .markxdown-chip {
+    --markxdown-chip-base: var(--markxdown-text-faint);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 76px;
+    font-size: var(--markxdown-text-xs);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    /*
+     * 面は3段。中央（55%）をいちばん薄くし、下端で少し戻す。平坦なグラデーションでは
+     * なく、下辺で受けた光が戻る形にしている。
+     */
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--markxdown-chip-base) 12%, transparent) 0%,
+      color-mix(in srgb, var(--markxdown-chip-base) 4.8%, transparent) 55%,
+      color-mix(in srgb, var(--markxdown-chip-base) 8.4%, transparent) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--markxdown-chip-base) 30%, transparent);
+    color: color-mix(in srgb, var(--markxdown-chip-base) 90%, #fff);
+    /* 上辺の照り返しと下辺の落ち込み。ガラスの厚みはこの2枚で出る */
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, #fff 16%, transparent),
+      inset 0 -1px 0 color-mix(in srgb, #000 20%, transparent);
+  }
+
+  /*
+   * アクティブだけが際立つ。形は `.markxdown-chip` のまま、基調色を差し替えて濃さを上げる。
+   *
+   * 枠は消さずに残す（`border-width: 0` にしない）。枠を消すと既定のチップと 1px ぶん
+   * 高さが揃わなくなる。
+   *
+   * 外へのにじみが2枚あるのは、近い1枚だけだと縁が硬く見え、遠い1枚だけだと輪郭が
+   * ぼやけるためである。近くで縁を作り、遠くで空気を作る。
+   */
+  .markxdown-chip-on {
+    --markxdown-chip-base: var(--markxdown-status-success);
+
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--markxdown-chip-base) 38%, transparent) 0%,
+      color-mix(in srgb, var(--markxdown-chip-base) 20%, transparent) 55%,
+      color-mix(in srgb, var(--markxdown-chip-base) 26%, transparent) 100%
+    );
+    border-color: color-mix(in srgb, var(--markxdown-chip-base) 55%, transparent);
+    color: color-mix(in srgb, var(--markxdown-chip-base) 55%, #fff);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--markxdown-chip-base) 60%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, #fff 34%, transparent),
+      inset 0 -1px 0 color-mix(in srgb, #000 28%, transparent),
+      0 0 7px color-mix(in srgb, var(--markxdown-chip-base) 45%, transparent),
+      0 0 15px color-mix(in srgb, var(--markxdown-chip-base) 22%, transparent);
+  }
+
+  /*
+   * 本文を入れる枠付きの箱（`MarkdownEditor.vue` の `framed`）。
+   *
+   * 定義はもと stroke-board の `app/assets/css/main.css` の `.sb-panel` に在り、値はそのまま
+   * 写している。本家の `.card` は影を持つが、ページの枠として使うこの箱には影が付いていない
+   * （稼働中の本家で実測: box-shadow は none）。実物に合わせて影は持たせない。
+   */
+  .markxdown-panel {
+    background: var(--markxdown-surface-panel);
+    border: 1px solid var(--markxdown-border-default);
+    border-radius: var(--markxdown-radius-lg);
+    padding: 16px;
   }
 }

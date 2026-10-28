@@ -20,7 +20,7 @@
  * 見なす計算はできない**。走査する側でここを踏むこと。
  *
  * **どの記法が記号を含むかは推測で決められない。** 記号を持つ記法を一通り実測した表が
- * `test/modules/markdown/runtime/position/silent-failure.test.ts` にある（記号を含むのは
+ * `test/src/runtime/position/silent-failure.test.ts` にある（記号を含むのは
  * インラインコードだけで、リンクも打ち消しも自動リンクも内側どうしで揃う）。記法を
  * 増やすときは当たりを付けずにあの表へ足すこと。
  *
@@ -50,7 +50,7 @@ const FENCE_TAG = 'pre';
  *
  * 本文の見え方（改行位置・折り返し・字間・余白）を1ピクセルも変えないのがこの変換の
  * 制約で、block を挟むと段落が割れる。`span` は既定で inline なので、`prose` にも
- * `.sb-markdown` にも `span` への指定が無い限り箱として現れない。
+ * `.markxdown-markdown` にも `span` への指定が無い限り箱として現れない。
  */
 const WRAPPER_TAG = 'span';
 
@@ -120,7 +120,7 @@ function markNode(node: MDCNode): MDCNode {
   // **生テキストの先頭（offset 0）から始まるノードは position を落とす**。文書がフェンスで
   // 始まると、その `pre` がこれに当たる。持っていない位置をでっち上げないので印は付かず、
   // 位置の口はそこだけ生テキストの走査で当てにいく（`./preview.ts` の `scanFencedBlocks`）。
-  // 実測は `test/modules/markdown/runtime/position/edge-cases.test.ts`。
+  // 実測は `test/src/runtime/position/edge-cases.test.ts`。
   if (node.tag === FENCE_TAG && node.position !== undefined) {
     return {
       ...node,

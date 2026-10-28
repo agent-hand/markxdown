@@ -25,7 +25,7 @@
  * `pre` を使わず `div._codeMirrorWrapper_` > `div._codeMirrorToolbar_` + `.cm-editor` になる。
  * stroke-board は読み取り表示なので CodeMirror は持ち込まず、**本家の DOM が画面に出す形**
  * （枠・右上の帯・行番号・折り返し）を `ProsePre` の上に載せる。枠・行番号・折り返しは
- * `ui.prose.pre`（`modules/markdown/index.ts` の `PROSE_THEME`）が持つ。
+ * `ui.prose.pre`（`src/module.ts` の `PROSE_THEME`）が持つ。
  *
  * 本家の右上の帯には `button[role=combobox][aria-label="Language"]` と「Delete code block」が
  * 並ぶが、文書表示（`/specs/view`）ではどちらも `disabled` で押せない。操作としては存在しない
@@ -132,10 +132,10 @@ const digits = computed(() => String(lines.value.length).length);
     :show-source="sourceShown"
     :source-range="sourceRange"
   />
-  <div v-else class="sb-code" data-testid="code-block" :style="{ '--sb-code-digits': digits }">
+  <div v-else class="markxdown-code" data-testid="code-block" :style="{ '--markxdown-code-digits': digits }">
     <!-- 本家の `_codeMirrorToolbar_`（右上に重なる帯）と同じ位置・同じ面 -->
-    <div class="sb-code-toolbar">
-      <span class="sb-code-language" data-testid="code-block-language">{{ languageName }}</span>
+    <div class="markxdown-code-toolbar">
+      <span class="markxdown-code-language" data-testid="code-block-language">{{ languageName }}</span>
     </div>
     <ProsePre
       v-bind="attrs"

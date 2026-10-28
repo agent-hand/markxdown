@@ -124,7 +124,7 @@ function selectInSource(): void {
 
     <section>
       <h2 class="mb-2 text-lg font-semibold">直す（MarkdownEditor）</h2>
-      <MarkdownEditor :content="content" :save="save" :can-save="true" testid="playground-editor" />
+      <MarkdownEditor :content="content" :save="save" :can-save="true" framed testid="playground-editor" />
     </section>
   </main>
 </template>

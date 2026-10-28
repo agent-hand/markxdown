@@ -46,7 +46,7 @@ export interface FenceSource {
    * （上記テストの「位置が取れない条件」）。生ファイルをそのまま渡すと切り出しがずれる。
    *
    * **ずれれば `null` になる、とは当てにしないこと。** 切り出しと画面の字がたまたま揃えば
-   * 対応表は組み上がってしまう（`test/modules/markdown/runtime/position/edge-cases.test.ts`
+   * 対応表は組み上がってしまう（`test/src/runtime/position/edge-cases.test.ts`
    * が包みの側でその反例を固定している）。基準を揃えるのは呼ぶ側の責任である。
    */
   source: string;
@@ -239,7 +239,7 @@ export function buildFenceMap({ source, position, code }: FenceSource): FenceMap
   // **見るのは `position` が届いたかどうかだけである。** `!position.start` や
   // `!position?.start` と書いてはならない。`start` が 0 の位置——冒頭のフェンスを
   // 属性で受け取る面（`../render/MarkdownDiagram.vue`）では実在する——を「位置が無い」と
-  // 取り違え、そこだけ黙って `null` になる（`test/modules/markdown/runtime/position/
+  // 取り違え、そこだけ黙って `null` になる（`test/src/runtime/position/
   // silent-failure.test.ts` の「`start` が 0 の位置は「無い」ではない」。`!position?.start`
   // へ書き換えると4本落ちる。実測 2026-08-30）。
   //

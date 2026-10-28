@@ -179,28 +179,28 @@ watch([(): string => props.code, (): string => colorMode.value], draw);
   </USkeleton>
 
   <!--
-    成功。`sb-mermaid` は本家の `.mermaid-container` の写し。
+    成功。`markxdown-mermaid` は本家の `.mermaid-container` の写し。
     差し込むのは mermaid が組み立てた SVG で、本家も同じ（`dangerouslySetInnerHTML`）。
 
     **生テキストを添えないときは、器を1つも増やさない。** 既定の見え方を1画素も変えない
-    ためで、下の枝と共通化しない（`.sb-mermaid` は `display:flex` なので、間に器を挟むと
+    ためで、下の枝と共通化しない（`.markxdown-mermaid` は `display:flex` なので、間に器を挟むと
     SVG の伸び方が変わる）。
   -->
-  <div v-else-if="!props.showSource" class="sb-mermaid" data-testid="mermaid-diagram" v-html="svg" />
+  <div v-else-if="!props.showSource" class="markxdown-mermaid" data-testid="mermaid-diagram" v-html="svg" />
 
   <!--
     成功、かつ生テキストを添える。
 
     **添えても本文の他の箇所が動かない。** 添えたものを図の枠の中へ絶対配置で収めるので、
     枠の高さは図だけのときと同じままになる（外側の器は余白も枠線も持たないので、
-    `.sb-mermaid` の margin はそのまま外へ抜ける）。注釈が付いた瞬間に後ろの段落が
+    `.markxdown-mermaid` の margin はそのまま外へ抜ける）。注釈が付いた瞬間に後ろの段落が
     ずり下がると読めなくなるため、この形は要件である。
 
     畳めるようにしてあるのは、生テキストが図の下側に重なるからである。既定は開いた状態
     （注釈の指す字がすぐ見える）で、絵の全体を見たいときに畳む。
   -->
   <div v-else class="relative" data-testid="mermaid-with-source">
-    <div class="sb-mermaid" data-testid="mermaid-diagram" v-html="svg" />
+    <div class="markxdown-mermaid" data-testid="mermaid-diagram" v-html="svg" />
     <!--
       `not-prose` を付けるのは、この `pre` に Tailwind Typography の `pre` の型
       （面・余白・字送り）が当たらないようにするため。生テキストの面（`MarkdownSource.vue`）

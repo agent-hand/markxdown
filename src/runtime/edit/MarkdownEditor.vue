@@ -38,7 +38,7 @@ const props = defineProps<{
    */
   editOnOpen?: boolean;
   /**
-   * 本文を枠付きの箱（`.sb-panel`）に入れる。
+   * 本文を枠付きの箱（`.markxdown-panel`）に入れる。
    *
    * 本家は画面によって枠の数が違う。仕様書・ステアリング（`SpecViewerPage`）は本文の
    * パネル1枚だけで、その内側いっぱいに contentEditable の暗い面が入る。一方で承認の
@@ -53,7 +53,8 @@ const props = defineProps<{
 }>();
 
 /**
- * 操作のボタンの見た目。本家の `.btn`（`main.css` の `.sb-action`）に合わせる。
+ * 操作のボタンの見た目。本家の `.btn` に合わせる。色は `markdown.css` の `--markxdown-*`
+ * （本家の design token の写し）から引く。利用側の変数は当てにしない。
  *
  * `size="lg"` が本家と同じ余白（`px-3 py-2` = 8px 12px）と字（`text-sm` = 12px）を持つので、
  * 差分だけを `ui` で足す。
@@ -63,16 +64,16 @@ const props = defineProps<{
  * - `disabled:opacity-50`: 本家は 0.5（@nuxt/ui の既定は 0.75）
  */
 const PRIMARY_UI = {
-  base: 'gap-1 border border-transparent text-white hover:bg-[var(--interactive-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed',
+  base: 'gap-1 border border-transparent text-white hover:bg-[var(--markxdown-interactive-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed',
 } as const;
 
-/** 塗らないボタン。本家の `.btn-secondary`（`.sb-action-secondary`）の値 */
+/** 塗らないボタン。本家の `.btn-secondary` の値 */
 const SECONDARY_UI = {
-  base: 'gap-1 border border-[var(--border-default)] bg-[var(--interactive-secondary)] text-[var(--text-secondary)] hover:bg-[var(--interactive-secondary-hover)] hover:border-[var(--border-strong)] disabled:opacity-50 disabled:cursor-not-allowed',
+  base: 'gap-1 border border-[var(--markxdown-border-default)] bg-[var(--markxdown-interactive-secondary)] text-[var(--markxdown-text-secondary)] hover:bg-[var(--markxdown-interactive-secondary-hover)] hover:border-[var(--markxdown-border-strong)] disabled:opacity-50 disabled:cursor-not-allowed',
 } as const;
 
 /**
- * 生テキストの入力欄。読みのときの本文（`.sb-markdown`）と同じ幅・同じ面に置く。
+ * 生テキストの入力欄。読みのときの本文（`.markxdown-markdown`）と同じ幅・同じ面に置く。
  *
  * `variant="none"` を選ぶのは、既定の `outline` が枠を `ring` で描くのに対し、ここは本家と
  * 同じ 1px の `border` で描くため。`fixed` を立てるのは、既定（`fixed: false`）が
@@ -80,7 +81,7 @@ const SECONDARY_UI = {
  */
 const TEXTAREA_UI = {
   root: 'block w-full',
-  base: 'min-h-[60vh] p-3 rounded-md border border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-primary)] font-mono text-sm/[1.7] resize-y whitespace-pre [tab-size:2] focus:outline-none focus:border-[var(--interactive-primary)]',
+  base: 'min-h-[60vh] p-3 rounded-md border border-[var(--markxdown-border-default)] bg-[var(--markxdown-surface-sunken)] text-[var(--markxdown-text-primary)] font-mono text-sm/[1.7] resize-y whitespace-pre [tab-size:2] focus:outline-none focus:border-[var(--markxdown-interactive-primary)]',
 } as const;
 
 type Mode = 'read' | 'edit';
@@ -262,16 +263,16 @@ onBeforeRouteLeave(() => {
         </UButton>
       </template>
 
-      <span v-if="justSaved" class="sb-chip sb-chip-on" data-testid="document-saved">
+      <span v-if="justSaved" class="markxdown-chip markxdown-chip-on" data-testid="document-saved">
         保存しました
       </span>
-      <span v-if="dirty" class="sb-chip" data-testid="document-unsaved">未保存</span>
-      <span v-if="cannotSave" class="sb-chip" data-testid="document-cannot-save">
+      <span v-if="dirty" class="markxdown-chip" data-testid="document-unsaved">未保存</span>
+      <span v-if="cannotSave" class="markxdown-chip" data-testid="document-cannot-save">
         本家に繋がっていないため保存できません
       </span>
     </div>
 
-    <p v-if="error !== null" class="sb-error" data-testid="document-save-error">
+    <p v-if="error !== null" class="markxdown-error" data-testid="document-save-error">
       {{ error }}
     </p>
 
@@ -282,7 +283,7 @@ onBeforeRouteLeave(() => {
       contentEditable の暗い面（#111827）を敷く。パネルは1枚で、暗い矩形がそのまま
       本文の領域を示す（実測: パネル x=280 w=1136 → 暗い面 x=297 w=1102 → 本文 x=309 w=1078）。
 
-      ここに `.sb-panel` を常に置いていたときは枠と余白が二重になり、本文の欄が本家より
+      ここに `.markxdown-panel` を常に置いていたときは枠と余白が二重になり、本文の欄が本家より
       34px 狭く・17px 内側にずれていた（実測）。
 
       編集中は markdown の生テキストを出す。読みのときは既存の描画を通す。
@@ -291,7 +292,7 @@ onBeforeRouteLeave(() => {
       プレビューは**直しかけ（draft）**を描く。保存済みの内容ではないので、
       書いたものがどう出るかをその場で確かめられる。
     -->
-    <div :class="framed === true ? 'sb-panel' : ''" data-testid="document-body">
+    <div :class="framed === true ? 'markxdown-panel' : ''" data-testid="document-body">
       <MarkdownView v-if="mode === 'edit' && preview" :value="draft">
         <template #empty><slot name="empty" /></template>
       </MarkdownView>

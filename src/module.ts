@@ -10,7 +10,7 @@ import type { ModuleOptions as MdcModuleOptions } from '@nuxtjs/mdc';
  * `contentEditableClassName` の写し）が持つ。ここに置くのは2種類だけ。
  *
  * 1. 本家の MDXEditor が prose の上に重ねている差分（表・インラインコード・リンク・引用）。
- *    もとは `runtime/assets/markdown.css` の `@layer sb-doc` に在った。
+ *    もとは `runtime/assets/markdown.css` の `@layer markxdown` に在った。
  * 2. `@nuxt/ui` の Prose が持ち込む指定のうち、上の型と食い違う分の打ち消し。
  *    実測（Prose を有効にする前後で計測）で出たのは次の5件:
  *      - `ProseH1` の `font-bold` が prose の 800 に勝って 700 になる
@@ -22,12 +22,12 @@ import type { ModuleOptions as MdcModuleOptions } from '@nuxtjs/mdc';
  * 同じ slot に競合するユーティリティを書けば、`tv` が `tailwind-merge` で後勝ちに解決する。
  * CSS の並び順に頼らないので、打ち消しはこの形で書くこと。
  *
- * **prose に勝たせたいものには `!` を付ける。** 以前は `@layer sb-doc` が prose より後の
+ * **prose に勝たせたいものには `!` を付ける。** 以前は `@layer markxdown` が prose より後の
  * レイヤーに居たので素の指定で勝てたが、theme のユーティリティは prose と同じレイヤーに
  * 載るため、`:where()` に子の指定を含む規則（表のセル・リンク・引用）には負ける。
  *
  * リンクと引用は e2e の文書（steering の product.md）に出てこないので、計測で確かめられて
- * いない。値は移す前の `@layer sb-doc` と同じで、`!` も同じ「prose に勝つ」ためのもの。
+ * いない。値は移す前の `@layer markxdown` と同じで、`!` も同じ「prose に勝つ」ためのもの。
  */
 const PROSE_THEME = {
   /* prose は 800。`@nuxt/ui` の `font-bold`（700）を戻す */
@@ -63,7 +63,7 @@ const PROSE_THEME = {
    * コードブロック。本家（spec-workflow-mcp）は MDXEditor の `codeMirrorPlugin` に渡していて
    * `pre` を使わず、`div._codeMirrorWrapper_` > `div._codeMirrorToolbar_` + `.cm-editor` になる。
    * CodeMirror は持ち込まず、本家が画面に出す形（枠・行番号・折り返し）を `ProsePre` に
-   * 持たせる。右上の言語名の札は `ProsePre` の外（`runtime/render/MarkdownFence.vue`）。
+   * 持たせる。右上の言語名の札は `ProsePre` の外（`runtime/render/MarkxdownFence.vue`）。
    *
    * 値の出どころは稼働中の本家（`/#/specs/view`）の実測と、その CSS の重ね
    * （`@mdxeditor` の `_codeMirrorWrapper_` ＋ `MDXEditorWrapper.css` のダーク時）。
@@ -71,14 +71,14 @@ const PROSE_THEME = {
    * root（入れ物の `div`）が外枠: margin 16px 0 / padding .8rem / border 1px #374151 /
    * radius 8px / overflow hidden / background #1f2937。
    *
-   * 行番号の桁数 `--sb-code-digits` は `MarkdownFence.vue` が行数から決めて inline で入れる。
+   * 行番号の桁数 `--markxdown-code-digits` は `MarkxdownFence.vue` が行数から決めて inline で入れる。
    * 番号の欄の幅は本家の1桁で 22px（左右 8px の余白＋数字1文字。9.6px の等幅1文字は約 5.76px）。
    * 本文の左位置は 番号の欄 ＋ 折り畳みの欄 8px ＋ 区切り線 1px ＋ 行の内側 6px。
    * 折り畳みは編集の仕掛けなので中身は持たないが、幅は空けて同じ位置に本文を置く。
    */
   pre: {
     slots: {
-      root: 'my-4 p-[12.8px] border border-[#374151] rounded-lg overflow-hidden bg-[#1f2937] [--sb-code-gutter:calc(16px_+_var(--sb-code-digits,1)_*_5.76px)] [--sb-code-indent:calc(var(--sb-code-gutter)_+_15px)]',
+      root: 'my-4 p-[12.8px] border border-[#374151] rounded-lg overflow-hidden bg-[#1f2937] [--markxdown-code-gutter:calc(16px_+_var(--markxdown-code-digits,1)_*_5.76px)] [--markxdown-code-indent:calc(var(--markxdown-code-gutter)_+_15px)]',
 
       /*
        * 本文。本家の `.cm-scroller`（font-family:monospace / line-height:1.4）と
@@ -102,7 +102,7 @@ const PROSE_THEME = {
        * 左の余白へずらす。折り返しても番号が付くのは先頭の1行だけで、続きは本文の左端に
        * 揃う（本家の CodeMirror と同じ）。
        */
-      base: 'm-0! pt-1! pb-1! pe-0.5! ps-(--sb-code-indent)! border-0 rounded-none! overflow-visible! bg-transparent! bg-[linear-gradient(to_right,#374151_0_calc(var(--sb-code-gutter)_+_8px),#4b5563_calc(var(--sb-code-gutter)_+_8px)_calc(var(--sb-code-gutter)_+_9px),transparent_calc(var(--sb-code-gutter)_+_9px))]! text-[#e5e7eb]! font-[family-name:monospace]! text-[16px]/[1.4]! whitespace-break-spaces [word-break:break-word] [counter-reset:sb-code-line] **:[.line]:inline [&_code]:p-0! [&_code]:[background:none]! [&_code]:[color:inherit]! [&_code]:[font:inherit]! [&_.line]:before:[counter-increment:sb-code-line] [&_.line]:before:content-[counter(sb-code-line)] [&_.line]:before:inline-block [&_.line]:before:box-border [&_.line]:before:w-(--sb-code-gutter) [&_.line]:before:ml-[calc(-1*var(--sb-code-indent))] [&_.line]:before:mr-[15px] [&_.line]:before:px-2 [&_.line]:before:text-[#6b7280] [&_.line]:before:text-[9.6px]/[1.4] [&_.line]:before:text-right [&_.line]:before:align-top',
+      base: 'm-0! pt-1! pb-1! pe-0.5! ps-(--markxdown-code-indent)! border-0 rounded-none! overflow-visible! bg-transparent! bg-[linear-gradient(to_right,#374151_0_calc(var(--markxdown-code-gutter)_+_8px),#4b5563_calc(var(--markxdown-code-gutter)_+_8px)_calc(var(--markxdown-code-gutter)_+_9px),transparent_calc(var(--markxdown-code-gutter)_+_9px))]! text-[#e5e7eb]! font-[family-name:monospace]! text-[16px]/[1.4]! whitespace-break-spaces [word-break:break-word] [counter-reset:markxdown-code-line] **:[.line]:inline [&_code]:p-0! [&_code]:[background:none]! [&_code]:[color:inherit]! [&_code]:[font:inherit]! [&_.line]:before:[counter-increment:markxdown-code-line] [&_.line]:before:content-[counter(markxdown-code-line)] [&_.line]:before:inline-block [&_.line]:before:box-border [&_.line]:before:w-(--markxdown-code-gutter) [&_.line]:before:ml-[calc(-1*var(--markxdown-code-indent))] [&_.line]:before:mr-[15px] [&_.line]:before:px-2 [&_.line]:before:text-[#6b7280] [&_.line]:before:text-[9.6px]/[1.4] [&_.line]:before:text-right [&_.line]:before:align-top',
     },
   },
 
@@ -126,7 +126,7 @@ const PROSE_THEME = {
    * **余白は `!` を付けないと prose に負ける。** prose の `:where(th)` 一式には
    * `thead th:first-child` のような子の指定があり、素のユーティリティより詳細度が高い
    * （実測: `px-2` だけでは左の余白が 0 になり、`py-1` だけでは `td` の上が 8px になる）。
-   * 以前は `@layer sb-doc` が prose より後のレイヤーだったので、この手当てが要らなかった。
+   * 以前は `@layer markxdown` が prose より後のレイヤーだったので、この手当てが要らなかった。
    */
   th: {
     base: 'px-2! py-1! rounded-none border border-[rgb(46,49,53)] bg-[#1f2937] text-left! align-baseline font-semibold text-white [font-size:inherit] [line-height:inherit]',
@@ -231,10 +231,10 @@ export default defineNuxtModule<ModuleOptions>({
     // 見た目の上書きは `ui.prose.*`（`nuxt.options.appConfig.ui`）へ置く。下の setup を見ること。
     //
     // そのうえで `pre` だけ自前の受け口に差し替える。本家は mermaid のフェンスを図（SVG）に
-    // しているが、shiki は生ソースのコードブロックにしてしまう。`MarkdownFence` が
+    // しているが、shiki は生ソースのコードブロックにしてしまう。`MarkxdownFence` が
     // `language` を見て mermaid だけ図へ回し、それ以外の `pre` は `ProsePre` へ委ねる。
     // 値は `resolveComponent()` で引かれるため、受け口は global に登録する必要がある。
-    components: { prose: true, map: { pre: 'MarkdownFence' } },
+    components: { prose: true, map: { pre: 'MarkxdownFence' } },
   },
 
   async setup(options, nuxt) {
@@ -264,7 +264,7 @@ export default defineNuxtModule<ModuleOptions>({
       // （実測。markdown の本文には症状が出ず、全画面のピクセル差分で見つかった）。
       // 位置を運ぶ手当ては `<MDC>` のスロットの中だけで行う。
       //
-      // 踏んだら止まる。`test/modules/markdown/runtime/render/markdown-view-position.test.ts`
+      // 踏んだら止まる。`test/src/runtime/render/markdown-view-position.test.ts`
       // が `<MDC>` の実際に描かれたことで形を固定しており、自前の `parseMarkdown` 呼び出しへ
       // 書き換えると12本落ちる（実測 2026-08-30）。
       //
@@ -308,13 +308,13 @@ export default defineNuxtModule<ModuleOptions>({
     // フェンスの受け口。**global でなければならない。**
     // MDC は `components.map` の値を `resolveComponent(名前)` で引くので、
     // `app.component()` による登録が要る。global を外すと名前が解けず、
-    // `<MarkdownFence>` という未知の要素がそのまま出る。
+    // `<MarkxdownFence>` という未知の要素がそのまま出る。
     //
     // 名前が `MarkdownPre` でないのは、`pre` が HTML のタグ名で、このモジュールにとっての
     // 役目（フェンスの振り分け）を表さないため。
     addComponent({
-      name: 'MarkdownFence',
-      filePath: resolve('./runtime/render/MarkdownFence.vue'),
+      name: 'MarkxdownFence',
+      filePath: resolve('./runtime/render/MarkxdownFence.vue'),
       global: true,
     });
   },

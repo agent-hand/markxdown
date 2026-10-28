@@ -42,7 +42,7 @@ const TEXT_NODE = 3;
 /** 要素の `nodeType` */
 const ELEMENT_NODE = 1;
 
-/** フェンスが描かれる要素のタグ。`ProsePre`（`../render/MarkdownFence.vue`）も図の添え書きも `pre` で出す */
+/** フェンスが描かれる要素のタグ。`ProsePre`（`../render/MarkxdownFence.vue`）も図の添え書きも `pre` で出す */
 const FENCE_TAG = 'PRE';
 
 /**
@@ -168,7 +168,7 @@ function readWrapperRange(element: Element, source: string): SourceRange | null 
  * **長さの差を按分してはならない。** 差は記号のぶんであって、中の字に均されるものではない。
  * 按分すると、インラインコードの中を選んだときに1〜2文字ずれた位置を黙って返すことになる。
  * どの記法で差が出るかの実測表は
- * `test/modules/markdown/runtime/position/silent-failure.test.ts` にある。
+ * `test/src/runtime/position/silent-failure.test.ts` にある。
  * そこで「中の字が範囲の中のどこに在るか」を探し、見つかった位置を頭に採る。記号は前後に
  * 同じ数だけ付く（`` ` `` も `` `` `` も、CommonMark が剥がす前後1つの空白も）ので中央を
  * 先に試し、外れたら前から探す。
@@ -243,7 +243,7 @@ function isClosingFence(line: string, open: FenceMarker): boolean {
  *
  * **フェンスの位置が DOM に出ない `pre` が残っているので、これが要る。**
  *
- * 印は `../position/source-span.ts` が `pre` の props へ載せ、`MarkdownFence` から
+ * 印は `../position/source-span.ts` が `pre` の props へ載せ、`MarkxdownFence` から
  * `ProsePre` の `v-bind="$attrs"` を通って属性として出る。だから普段はここを通らない。通るのは
  * **生テキストの先頭（offset 0）から始まるフェンス**、つまり文書がフェンスで始まる場合
  * だけである。`@nuxtjs/mdc` は position を真偽で拾うので
@@ -258,7 +258,7 @@ function isClosingFence(line: string, open: FenceMarker): boolean {
  * **黙ってここへ落ちることはない。** 印が有れば `resolveFence` はその範囲しか試さず、
  * 合わなければ `null` を返す（生テキストの側を探し直さない）。どちらの経路を通ったかは
  * `pre` の印の有無だけで決まり、その境目は
- * `test/modules/markdown/runtime/position/edge-cases.test.ts` が固定している。
+ * `test/src/runtime/position/edge-cases.test.ts` が固定している。
  *
  * **これは候補を出すだけで、決めるのは `buildFenceMap` である。** 出した範囲と `pre` の中の
  * 字が桁まで合ったものだけを採るので、行の読み違いは対応表が作れないという形で落ちる。
@@ -299,7 +299,7 @@ function scanFencedBlocks(source: string): Fenced[] {
  * `pre` の中の字から、対応表の材料になる `code` の候補を出す。
  *
  * **画面に出ている字は `code` そのものではない。** 描く側が末尾を落とすからである
- * （`../render/MarkdownFence.vue` の `code.trimEnd()`。shiki を通る場合も
+ * （`../render/MarkxdownFence.vue` の `code.trimEnd()`。shiki を通る場合も
  * `codeToHast(code.trimEnd())` で同じ）。落ちるのは末尾だけなので、行の数から
  * 足し直せる本数が決まる。
  *
