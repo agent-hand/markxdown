@@ -22,6 +22,8 @@ __metadata:
     "@nuxtjs/mdc": "npm:^0.23.1"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@types/node": "npm:^22"
+    "@vitejs/plugin-vue": "npm:^6.0.8"
+    "@vue/compiler-dom": "npm:^3.5.41"
     "@vue/test-utils": "npm:^2.4.11"
     "@vueuse/core": "npm:^14.4.0"
     defu: "npm:^6.1.7"
@@ -3537,7 +3539,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-vue@npm:^6.0.10":
+"@vitejs/plugin-vue@npm:^6.0.10, @vitejs/plugin-vue@npm:^6.0.8":
   version: 6.0.10
   resolution: "@vitejs/plugin-vue@npm:6.0.10"
   dependencies:

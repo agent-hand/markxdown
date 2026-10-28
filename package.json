@@ -60,6 +60,8 @@
     "@nuxt/test-utils": "^4.1.0",
     "@nuxt/ui": "^4.10.0",
     "@types/node": "^22",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/compiler-dom": "^3.5.41",
     "@vue/test-utils": "^2.4.11",
     "happy-dom": "^20.11.6",
     "nuxt": "^4.5.2",
