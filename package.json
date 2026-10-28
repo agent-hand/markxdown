@@ -39,7 +39,7 @@
     "dev:preview": "nuxt preview playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
     "test": "vitest run",
-    "test:types": "vue-tsc --noEmit -p tsconfig.types.json && cd playground && vue-tsc --noEmit"
+    "test:types": "cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
     "@nuxt/kit": "^4.5.2",

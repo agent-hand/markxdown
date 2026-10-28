@@ -279,7 +279,13 @@ export default defineNuxtModule<ModuleOptions>({
     //
     // `defu` は先に入っている値を残すので、このモジュールが `@nuxt/ui` より前に走る限り
     // ここの値が @nuxt/ui の既定に勝ち、利用側の `app.config.ts` は更に上から勝てる。
-    nuxt.options.appConfig.ui = defu(nuxt.options.appConfig.ui ?? {}, { prose: PROSE_THEME });
+    //
+    // 型は `appConfig.ui` のものへ戻す。`PROSE_THEME` は `as const` で slot の値が文字列リテラルに
+    // なり、`@nuxt/ui` を載せた型検査（playground）では `string[]` 側と合わず TS2322 になる（実測）。
+    // 値の形は `@nuxt/ui` の theme が受ける形そのもので、実行時の働きは変わらない。
+    nuxt.options.appConfig.ui = defu(nuxt.options.appConfig.ui ?? {}, {
+      prose: PROSE_THEME,
+    }) as typeof nuxt.options.appConfig.ui;
 
     // **Prose の名前は `@nuxt/ui` の実体に解かせる。**
     //
