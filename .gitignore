@@ -55,6 +55,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Claude Code の開発者ローカル設定。permission 設定だけ追跡する
-.claude/*
-!.claude/settings.json
+# Claude Code の開発者ローカル設定。ローカルの絶対パスを含むので追跡しない
+.claude/
