@@ -57,6 +57,12 @@ describe('生 HTML は描かない', () => {
     expect(textOf(ast)).not.toContain('alert');
   });
 
+  it('段落の中のインラインの HTML も要素にならない', async () => {
+    const ast = await parse('まえ<b onclick="x()">太</b>あと\n');
+
+    expect(find(ast, 'b')).toBeUndefined();
+  });
+
   it('生 HTML を落としても、その前後の markdown は残る', async () => {
     const ast = await parse('**太字**\n\n<img src="x">\n\n[リンク](https://example.com)\n');
 
