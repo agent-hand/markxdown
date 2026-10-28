@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "markdown を描く・直す・位置を出す Nuxt module。@nuxt/ui の Prose の上で働く",
   "repository": "agent-hand/markxdown",
+  "license": "MIT",
   "type": "module",
   "packageManager": "yarn@4.17.0",
   "exports": {
